@@ -23,6 +23,20 @@ const ItemCtrl = (function () {
     getItems: function () {
       return data.items;
     },
+    AddItem: function (name, calories) {
+      let ID;
+      // Create id
+      if (data.items.length > 0) {
+        ID = data.items[data.items.length - 1].id + 1;
+      } else {
+        ID = 0;
+      }
+      calories = parseInt(calories);
+      // Create new item
+      newItem = new Item(ID, name, calories);
+      data.items.push(newItem);
+      return newItem;
+    },
     logData: function () {
       return data;
     }
@@ -32,7 +46,10 @@ const ItemCtrl = (function () {
 // UI controller
 const UICtrl = (function () {
   const UISelectors = {
-    itemList: '#item-list'
+    itemList: '#item-list',
+    addBtn: '.add-btn',
+    itemNameInput: '#item-name',
+    itemCaloriesInput: '#item-calories',
   }
   return {
     populateItemList: function (items) {
@@ -46,12 +63,40 @@ const UICtrl = (function () {
         `;
       });
       document.querySelector(UISelectors.itemList).innerHTML = html;
+    },
+    getItemInput: function () {
+      return {
+        name: document.querySelector(UISelectors.itemNameInput).value,
+        calories: document.querySelector(UISelectors.itemCaloriesInput).value
+      }
+    },
+    getSelectors: function () {
+      return UISelectors;
     }
   }
 })();
 
 // App controller
 const App = (function (ItemCtrl, UICtrl) {
+  // Load event listeners
+  const loadEventListeners = function () {
+    // Get UI selectors
+    const UISelectors = UICtrl.getSelectors();
+    // Add item event
+    document.querySelector(UISelectors.addBtn).addEventListener('click', itemAddSubmit);
+  }
+
+  // Add item
+  const itemAddSubmit = function (e) {
+    // Get form input from UI controller
+    const input = UICtrl.getItemInput();
+    // Check for values in input fields
+    if (input.name !== '' && input.calories !== '') {
+      // Add item
+      const newItem = ItemCtrl.AddItem(input.name, input.calories);
+    }
+    e.preventDefault();
+  }
   // Public methods
   return {
     init: function () {
@@ -59,6 +104,8 @@ const App = (function (ItemCtrl, UICtrl) {
       const items = ItemCtrl.getItems();
       // Populate fetched items
       UICtrl.populateItemList(items);
+      // Load event listeners
+      loadEventListeners();
     }
   }
 })(ItemCtrl, UICtrl);
