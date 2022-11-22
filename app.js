@@ -10,10 +10,10 @@ const ItemCtrl = (function () {
   // Data structure/state
   const data = {
     items: [
-      { id: 0, name: 'Steak', calories: 600 },
-      { id: 1, name: 'T-bone', calories: 450 },
-      { id: 2, name: 'Salads', calories: 100 },
-      { id: 3, name: 'Burgers', calories: 1200 }
+      // { id: 0, name: 'Steak', calories: 600 },
+      // { id: 1, name: 'T-bone', calories: 450 },
+      // { id: 2, name: 'Salads', calories: 100 },
+      // { id: 3, name: 'Burgers', calories: 1200 }
     ],
     currentItem: null,
     totalCalories: 0
@@ -37,6 +37,17 @@ const ItemCtrl = (function () {
       data.items.push(newItem);
       return newItem;
     },
+    getTotalCalories: function () {
+      let total = 0;
+      // Loop through items and sum up calories
+      data.items.forEach((item) => {
+        total += item.calories
+      });
+      // Set total calories in data structure
+      data.totalCalories = total;
+      // return total
+      return data.totalCalories;
+    },
     logData: function () {
       return data;
     }
@@ -50,6 +61,7 @@ const UICtrl = (function () {
     addBtn: '.add-btn',
     itemNameInput: '#item-name',
     itemCaloriesInput: '#item-calories',
+    totalCalories: '.total-calories'
   }
   return {
     populateItemList: function (items) {
@@ -71,6 +83,8 @@ const UICtrl = (function () {
       }
     },
     addListItem: function (item) {
+      // Show added item
+      document.querySelector(UISelectors.itemList).style.display = 'block';
       // Create li element
       const li = document.createElement('li');
       // Add class
@@ -88,6 +102,12 @@ const UICtrl = (function () {
     clearInput: function () {
       document.querySelector(UISelectors.itemNameInput).value = '';
       document.querySelector(UISelectors.itemCaloriesInput).value = '';
+    },
+    hideList: function () {
+      document.querySelector(UISelectors.itemList).style.display = 'none';
+    },
+    showTotalCalories: function (totalCalories) {
+      document.querySelector(UISelectors.totalCalories).textContent = totalCalories;
     },
     getSelectors: function () {
       return UISelectors;
@@ -115,6 +135,10 @@ const App = (function (ItemCtrl, UICtrl) {
       const newItem = ItemCtrl.AddItem(input.name, input.calories);
       // Add item to UI
       UICtrl.addListItem(newItem);
+      // Get total calories
+      const totalCalories = ItemCtrl.getTotalCalories();
+      // Add total calories to UI
+      UICtrl.showTotalCalories(totalCalories);
       // Clear input fields
       UICtrl.clearInput();
     }
@@ -125,8 +149,17 @@ const App = (function (ItemCtrl, UICtrl) {
     init: function () {
       // Fetch items
       const items = ItemCtrl.getItems();
-      // Populate fetched items
-      UICtrl.populateItemList(items);
+      // Check for items
+      if (items.length === 0) {
+        UICtrl.hideList();
+      } else {
+        // Populate fetched items
+        UICtrl.populateItemList(items);
+      }
+      // Get total calories
+      const totalCalories = ItemCtrl.getTotalCalories();
+      // Add total calories to UI
+      UICtrl.showTotalCalories(totalCalories);
       // Load event listeners
       loadEventListeners();
     }
