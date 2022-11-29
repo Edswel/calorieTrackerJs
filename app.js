@@ -69,6 +69,9 @@ const ItemCtrl = (function () {
       // Remove item
       data.items.splice(index, 1);
     },
+    clearAllItems: function () {
+      data.items = [];
+    },
     setCurrentItem: function (item) {
       data.currentItem = item;
     },
@@ -101,6 +104,7 @@ const UICtrl = (function () {
     updateBtn: '.update-btn',
     deleteBtn: '.delete-btn',
     backBtn: '.back-btn',
+    clearBtn: '.clear-btn',
     itemNameInput: '#item-name',
     itemCaloriesInput: '#item-calories',
     totalCalories: '.total-calories'
@@ -217,6 +221,8 @@ const App = (function (ItemCtrl, UICtrl) {
     document.querySelector(UISelectors.deleteBtn).addEventListener('click', itemDeleteSubmit);
     // Back button event
     document.querySelector(UISelectors.backBtn).addEventListener('click', UICtrl.clearEditState);
+    // Clear all event
+    document.querySelector(UISelectors.clearBtn).addEventListener('click', clearAllItemsClick);
   }
 
   // Add item
@@ -287,6 +293,10 @@ const App = (function (ItemCtrl, UICtrl) {
     UICtrl.clearEditState();
 
     e.preventDefault();
+  }
+  // Clear all items event
+  const clearAllItemsClick = function () {
+    ItemCtrl.clearAllItems();
   }
   // Public methods
   return {
