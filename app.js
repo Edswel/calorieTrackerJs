@@ -155,6 +155,11 @@ const UICtrl = (function () {
         }
       })
     },
+    deleteListItem: function (id) {
+      const itemId = `#item-${id}`;
+      const item = document.querySelector(itemId);
+      item.remove();
+    },
     clearInput: function () {
       document.querySelector(UISelectors.itemNameInput).value = '';
       document.querySelector(UISelectors.itemCaloriesInput).value = '';
@@ -272,6 +277,8 @@ const App = (function (ItemCtrl, UICtrl) {
     const currentItem = ItemCtrl.getCurrentItem();
     // Delete from data structure
     ItemCtrl.deleteItem(currentItem.id);
+    // Delete from UI
+    UICtrl.deleteListItem(currentItem.id);
 
     e.preventDefault();
   }
