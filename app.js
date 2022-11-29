@@ -198,6 +198,8 @@ const App = (function (ItemCtrl, UICtrl) {
     document.querySelector(UISelectors.itemList).addEventListener('click', itemEditClick);
     // Update item
     document.querySelector(UISelectors.updateBtn).addEventListener('click', itemUpdateSubmit);
+    // Back button event
+    document.querySelector(UISelectors.backBtn).addEventListener('click', UICtrl.clearEditState);
   }
 
   // Add item
